@@ -4,8 +4,9 @@
     "min_interval": "1800",
     "database": {
         "host": "127.0.0.1",
-        "user": "username",
-        "password": "passwd",
-        "database_name": "databasename"
-    }
+        "user": "user",
+        "password": "password",
+        "database_name": "flood_engine"
+    },
+    "salt": "ThisPasswordMustBeChanged"
 }
