@@ -13,5 +13,6 @@ app.use(cors());
 
 require('./app/routes/announce.route')(app);
 require('./app/routes/user.route')(app);
+require('./app/routes/torrent.route')(app);
 
 app.listen(config.port || 3000, function() {});
