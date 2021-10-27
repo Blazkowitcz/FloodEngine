@@ -20,14 +20,14 @@ class Model{
     }
 }
 
-Model.findOne = function(data){
-    let table_name = pluralize.pluralize(this.name.toLowerCase());
+Model.findOne = function(data, table){
+    let table_name = table !== undefined ? pluralize.pluralize(table.toLowerCase()) : pluralize.pluralize(this.name.toLowerCase());
     return new Promise(function(resolve, reject){
         db.find(table_name, data, (err, res) => {
             if(err){
                 reject(err);
             } else {
-                let val = res.length > 0 ? res[0]: {};
+                let val = res.length > 0 ? res[0]: null;
                 resolve(val);
             }
         });
