@@ -17,4 +17,9 @@ function editTorrent(){
     });
 }
 
-module.exports = {editTorrent};
+function formatName(name){
+    name = name.replace(/\u2013|\u2014/g, "-");
+    return name;
+}
+
+module.exports = {editTorrent, formatName};

@@ -20,6 +20,13 @@ class Torrent extends Model {
             resolve(torrent !== null);
         });
     }
+
+    static async getTorrentById(id) {
+        let torrent = await this.__proto__.findOne({ id: id }, this.name);
+        return new Promise(function (resolve, reject) {
+            resolve(torrent);
+        });
+    }
 }
 
 module.exports = Torrent;
