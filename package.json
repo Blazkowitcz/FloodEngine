@@ -4,7 +4,7 @@
   "description": "Torrent Tracker in Node.js",
   "main": "server.js",
   "scripts": {
-    "test": "./node_modules/.bin/eslint *.js"
+    "test": "./node_modules/.bin/eslint './**/*.js'"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Blazkowitcz/FloodEngine#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "bencode": "^2.0.2",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -28,6 +29,9 @@
     "eslintrc": "^1.0.6",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
-    "mysql": "^2.18.1"
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.18.1",
+    "nt": "^0.7.1",
+    "parse-torrent": "^9.1.4"
   }
 }
