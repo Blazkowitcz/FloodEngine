@@ -1,21 +1,23 @@
 const bcrypt = require('bcryptjs');
+const crypto = require("crypto");
 const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const config = require('../../conf.json');
 
 /**
  * Register user
- * @param {*} req 
- * @param {*} res 
+ * @param {Request} req 
+ * @param {Result} res 
  */
 exports.signup = async (req, res) => {
     const { username, email, password } = req.body;
     try{
         let user = await User.findOne({username: username});
-        if(Object.keys(user).length > 0){
+        if(user !== null){
             res.send("User already exist");
         } else{
-            user = new User({username, email, password});
+            let passkey = crypto.randomBytes(16).toString("hex");
+            user = new User({username, email, password, passkey: passkey});
             let salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
             await user.save();
@@ -28,8 +30,8 @@ exports.signup = async (req, res) => {
 
 /**
  * Log User
- * @param {*} req 
- * @param {*} res 
+ * @param {Request} req 
+ * @param {Result} res 
  * @returns 
  */
 exports.signin = async (req, res) => {
@@ -43,7 +45,8 @@ exports.signin = async (req, res) => {
         if(!match){
             return res.status(400).json({message: "Error during login"});
         }
-        let payload = { user: {id: user.id }};
+        delete user.password;
+        let payload = { user: {id: user.id, username: user.username, passkey: user.passkey}};
         jwt.sign(
             payload,
             config.salt,
