@@ -11,4 +11,5 @@ module.exports = app => {
      * GET Routes
      */
     app.get('/download/:id', auth.checkToken, torrent.download);
+    app.get('/last', auth.checkToken, torrent.getLastTorrents);
 };
