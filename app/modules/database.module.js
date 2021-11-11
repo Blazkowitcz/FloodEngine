@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const config = require('../../conf.json');
+const string_utils = require('../utils/string.util');
 const db = mysql.createConnection({
     host: config.database.host,
     user: config.database.user,
@@ -18,7 +19,7 @@ db.connect(function(err){
  * @param {Function} result 
  */
 exports.create = (table, data, result) => {
-    db.query("INSERT INTO " + table + " SET ?", [data], (err, res) => {
+    db.query("REPLACE INTO " + table + " SET ?", [data], (err, res) => {
         try{
             if(err){
                 result(err, null);
@@ -56,15 +57,23 @@ exports.findAll = (table, result) => {
  * @param {Array} data 
  * @param {Function} result 
  */
-exports.find = (table, data, result) => {
-    db.query("SELECT * FROM " + table + " WHERE ?", [data], (err, res) => {
+exports.find = (table, data, options, result) => {
+    let query = options !== undefined ? string_utils.setQueryOptions(options, "SELECT * FROM " + table + " WHERE ?") : "SELECT * FROM " + table + " WHERE ?";
+    if(data === null){
+        query = query.replace('WHERE ?', ' ');
+    }else{
+        query = string_utils.setMultipleWhere(data, query);
+    }
+    db.query(query, [data], (err, res) => {
         try{
             if(err){
+                console.log(err);
                 result(err, null);
             }else{
                 result(null, res);
             }
         } catch (e) {
+            console.log(e);
             throw e;
         }
     });
