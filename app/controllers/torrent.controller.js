@@ -40,7 +40,7 @@ exports.upload = async (req, res) => {
 exports.download = async (req, res) => {
     let torrent = await Torrent.getTorrentById(req.params.id);
     let data = parse_torrent(fs.readFileSync('./public/torrents/' + torrent.filename));
-    data.announce[0] = config.address + ':' + config.port + "/announce/<PASSKEY>";
+    data.announce[0] = 'http://' + config.address + ':' + config.port + "/announce/" + req.user.passkey;
     let new_torrent = parse_torrent.toTorrentFile(data);
     let file = data.name + '.torrent';
     res.writeHead(200, {
@@ -48,4 +48,14 @@ exports.download = async (req, res) => {
         'Content-Type': 'text/plain',
     });
     return res.end(new_torrent);
+}
+
+/**
+ * Return last torrents
+ * @param {Request} req 
+ * @param {Result} res 
+ */
+exports.getLastTorrents = async (req, res) => {
+    let torrents = await Torrent.getLastTorrents();
+    res.send(torrents);
 }
