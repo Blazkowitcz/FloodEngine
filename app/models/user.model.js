@@ -1,28 +1,24 @@
-const Model = require('../modules/model.module');
+const mongoose = require('mongoose');
+const autoIncrement = require('mongoose-sequence')(mongoose);
 
-class User extends Model {
-    constructor(data) {
-        super();
-        for (let key in data) {
-            this[key] = data[key];
-        }
+const User = mongoose.Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    passkey: {
+        type: String,
+        required: true
     }
+});
 
-    /**
-     * Return user id 
-     * @param {String} passkey 
-     * @returns 
-     */
-    static async getUserByPasskey(passkey) {
-        let user = await this.__proto__.findOne({ passkey: passkey }, { table: this.name });
-        return new Promise(function (resolve, reject) {
-            if (user) {
-                resolve(user);
-            } else {
-                reject(null);
-            }
-        });
-    }
-}
-
-module.exports = User;
+User.plugin(autoIncrement, {id: 'user', inc_field: 'id'});
+module.exports = mongoose.model('user', User);

@@ -1,8 +1,8 @@
 module.exports = app => {
-    var announcer = require('../controllers/announce.controller');
+    let AnnounceController = require('../controllers/announce.controller');
 
     /**
-     * GET Routes
+     * POST
      */
-    app.get('/announce/:passkey', announcer.announce);
+    app.get('/announce/:passkey', AnnounceController.announce);
 };
