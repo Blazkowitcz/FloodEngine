@@ -1,48 +1,32 @@
-const Model = require('../modules/model.module');
+const mongoose = require('mongoose');
+const autoIncrement = require('mongoose-sequence')(mongoose);
 
-class Torrent extends Model {
-
-    constructor(data) {
-        super();
-        for (let key in data) {
-            this[key] = data[key];
-        }
+const Torrent = mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    filename: {
+        type: String,
+        required: true
+    },
+    user_id: {
+        type: String,
+        required: true
+    },
+    hash: {
+        type: String,
+        required: true
+    },
+    size: {
+        type: Number,
+        required: true
+    },
+    created_at: {
+        type: Date,
+        required: true
     }
+});
 
-    /**
-     * Check if a hash exist in torrent database
-     * @param {String} hash 
-     * @returns {Bool}
-     */
-    static async checkIfTorrentExist(hash) {
-        let torrent = await this.__proto__.findOne({ hash: hash }, {table: this.name});
-        return new Promise(function (resolve, reject) {
-            resolve(torrent !== null);
-        });
-    }
-
-    /**
-     * Return torrent related to id
-     * @param {Integer} id 
-     * @returns 
-     */
-    static async getTorrentById(id) {
-        let torrent = await this.__proto__.findOne({ id: id }, {table: this.name, limit: 1, order: {column: 'created_at', direction: 'ASC'}});
-        return new Promise(function (resolve, reject) {
-            resolve(torrent);
-        });
-    }
-
-    /**
-     * Return 25 last torrents
-     * @returns 
-     */
-    static async getLastTorrents() {
-        let torrents = await this.__proto__.find(null, {table: this.name, limit: 25, order: {column: 'id', direction: 'DESC'}});
-        return new Promise(function (resolve, reject) {
-            resolve(torrents);
-        });
-    }
-}
-
-module.exports = Torrent;
+Torrent.plugin(autoIncrement, {id: 'torrent', inc_field: 'id'});
+module.exports = mongoose.model('torrent', Torrent);

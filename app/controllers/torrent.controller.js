@@ -1,27 +1,26 @@
 const crypto = require("crypto");
 const parse_torrent = require('parse-torrent');
-const Torrent = require('../models/torrent.model');
 const fs = require('fs');
+const config = require('../../config.json');
 const torrent_utils = require('../utils/torrent.util');
-const config = require('../../conf.json');
+const Torrent = require('../models/torrent.model');
 
 /**
- * Upload a torrent
+ * Upload a Torrent
  * @param {Request} req 
  * @param {Result} res 
- * @returns
  */
 exports.upload = async (req, res) => {
     let data = parse_torrent(req.files.torrent.data);
-    let exist = await Torrent.checkIfTorrentExist(data.infoHash);
-    if (!exist) {
+    let torrent = await Torrent.findOne({hahs: data.infoHash});
+    if(torrent === null){
         let file = req.files.torrent;
         let filename = crypto.randomBytes(16).toString("hex") + '.torrent';
-        let torrent = new Torrent({
-            name: data.name,
+        torrent = new Torrent({
+            name: data.name, 
             filename: filename,
             hash: data.infoHash,
-            user_id: 697,
+            user_id: 1,
             size: data.length,
             created_at: new Date()
         });
@@ -32,13 +31,13 @@ exports.upload = async (req, res) => {
 }
 
 /**
- * Download a torrent
+ * Download a Torrent
  * @param {Request} req 
  * @param {Result} res 
- * @returns 
+ * @returns {Buffer}
  */
 exports.download = async (req, res) => {
-    let torrent = await Torrent.getTorrentById(req.params.id);
+    let torrent = await Torrent.findOne({_id: req.params.id});
     let data = parse_torrent(fs.readFileSync('./public/torrents/' + torrent.filename));
     data.announce[0] = 'http://' + config.address + ':' + config.port + "/announce/" + req.user.passkey;
     let new_torrent = parse_torrent.toTorrentFile(data);
@@ -51,11 +50,10 @@ exports.download = async (req, res) => {
 }
 
 /**
- * Return last torrents
+ * Get new Torrents
  * @param {Request} req 
  * @param {Result} res 
  */
-exports.getLastTorrents = async (req, res) => {
-    let torrents = await Torrent.getLastTorrents();
-    res.send(torrents);
+exports.getNewTorrents = async (req, res) => {
+    res.send(await Torrent.find().sort({'created_at': -1}).select('-__v').limit(20));
 }

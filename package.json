@@ -1,37 +1,30 @@
 {
   "name": "floodengine",
   "version": "1.0.0",
-  "description": "Torrent Tracker in Node.js",
+  "description": "Torrent Tracker in NodeJS",
   "main": "server.js",
   "scripts": {
-    "test": "./node_modules/.bin/eslint './**/*.js'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Blazkowitcz/FloodEngine.git"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "Torrent",
-    "Tracker"
+    "torrent",
+    "tracker",
+    "nodejs"
   ],
-  "author": "Blazkowitcz",
+  "author": "Blazkowicz",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Blazkowitcz/FloodEngine/issues"
-  },
-  "homepage": "https://github.com/Blazkowitcz/FloodEngine#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "bencode": "^2.0.2",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.19.1",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
-    "eslintrc": "^1.0.6",
-    "express": "^4.17.1",
+    "express": "^4.17.2",
     "express-fileupload": "^1.2.1",
+    "fs": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
-    "mysql": "^2.18.1",
-    "nt": "^0.7.1",
+    "mongoose": "^6.1.6",
+    "mongoose-sequence": "^5.3.1",
     "parse-torrent": "^9.1.4"
   }
 }

@@ -1,0 +1,13 @@
+{
+    "port": 3000,
+    "interval": "2700",
+    "min_interval": "1800",
+    "database": {
+        "host": "127.0.0.1",
+        "port": 27017,
+        "user": "user",
+        "password": "password",
+        "database_name": "flood_engine"
+    },
+    "salt": "ThisPasswordMustBeChanged"
+}

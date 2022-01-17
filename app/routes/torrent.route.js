@@ -1,15 +1,9 @@
 module.exports = app => {
-    var torrent = require('../controllers/torrent.controller');
-    var auth = require('../middlewares/auth.middleware');
+    let TorrentController = require('../controllers/torrent.controller');
+    let auth = require('../middlewares/auth.middleware');
 
-    /**
-     * POST Routes
-     */
-    app.post('/upload', auth.checkToken, torrent.upload);
+    app.post('/upload', TorrentController.upload);
 
-    /**
-     * GET Routes
-     */
-    app.get('/download/:id', auth.checkToken, torrent.download);
-    app.get('/last', auth.checkToken, torrent.getLastTorrents);
+    app.get('/download/:id', auth.checkToken, TorrentController.download);
+    app.get('/torrents/news', auth.checkToken, TorrentController.getNewTorrents);
 };

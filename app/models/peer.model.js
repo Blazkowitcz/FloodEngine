@@ -1,28 +1,28 @@
-const Model = require('../modules/model.module');
+const mongoose = require('mongoose');
+const autoIncrement = require('mongoose-sequence')(mongoose);
 
-class Peer extends Model { 
-    constructor(data) {
-        super();
-        for (let key in data) {
-            this[key] = data[key];
-        }
+const Peer = mongoose.Schema({
+    user_id: {
+        type: String,
+        required: true
+    },
+    hash: {
+        type: String,
+        required: true
+    },
+    ip: {
+        type: String,
+        required: true
+    },
+    port: {
+        type: Number,
+        required: true
+    },
+    date: {
+        type: Date,
+        required: true
     }
+});
 
-    /**
-     * Return peers related to hash
-     * @param {String} hash 
-     * @returns 
-     */
-    static async getPeersFromHash(hash){
-        let peers = await this.__proto__.find({ hash: hash }, {table: this.name});
-        return new Promise(function (resolve, reject) {
-            let result = [];
-            peers.forEach(peer => {
-                result.push({ip: peer.ip, port: peer.port});
-            });
-            resolve(result);
-        });
-    }
-}
-
-module.exports = Peer;
+Peer.plugin(autoIncrement, {id: 'peer', inc_field: 'id'});
+module.exports = mongoose.model('peer', Peer);
