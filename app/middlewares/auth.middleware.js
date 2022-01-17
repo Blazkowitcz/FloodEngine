@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const config = require('../../conf.json');
+const config = require('../../config.json');
 
 /**
  * Check token sent by user for authorization
