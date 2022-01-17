@@ -4,6 +4,7 @@ const fs = require('fs');
 const config = require('../../config.json');
 const torrent_utils = require('../utils/torrent.util');
 const Torrent = require('../models/torrent.model');
+const Peer = require('../models/peer.model');
 
 /**
  * Upload a Torrent
@@ -12,12 +13,12 @@ const Torrent = require('../models/torrent.model');
  */
 exports.upload = async (req, res) => {
     let data = parse_torrent(req.files.torrent.data);
-    let torrent = await Torrent.findOne({hahs: data.infoHash});
-    if(torrent === null){
+    let torrent = await Torrent.findOne({ hahs: data.infoHash });
+    if (torrent === null) {
         let file = req.files.torrent;
         let filename = crypto.randomBytes(16).toString("hex") + '.torrent';
         torrent = new Torrent({
-            name: data.name, 
+            name: data.name,
             filename: filename,
             hash: data.infoHash,
             user_id: 1,
@@ -37,7 +38,7 @@ exports.upload = async (req, res) => {
  * @returns {Buffer}
  */
 exports.download = async (req, res) => {
-    let torrent = await Torrent.findOne({_id: req.params.id});
+    let torrent = await Torrent.findOne({ _id: req.params.id });
     let data = parse_torrent(fs.readFileSync('./public/torrents/' + torrent.filename));
     data.announce[0] = 'http://' + config.address + ':' + config.port + "/announce/" + req.user.passkey;
     let new_torrent = parse_torrent.toTorrentFile(data);
@@ -55,5 +56,31 @@ exports.download = async (req, res) => {
  * @param {Result} res 
  */
 exports.getNewTorrents = async (req, res) => {
-    res.send(await Torrent.find().sort({'created_at': -1}).select('-__v').limit(20));
+    res.send(await Torrent.find().sort({ 'created_at': -1 }).select('-__v').limit(20));
+}
+
+exports.getBestTorrents = async (req, res) => {
+    let best_peers = await Peer.aggregate([
+        {
+            "$group": {
+                "_id": { "$toLower": "$hash" },
+                "count": { "$sum": 1 }
+            }
+        },
+        {
+            "$group": {
+                "_id": null,
+                "counts": {
+                    "$push": { "k": "$_id", "v": "$count" }
+                },
+            }
+        },
+        { $sort: { v: 1 } },
+        {
+            "$replaceRoot": {
+                "newRoot": { "$arrayToObject": "$counts" }
+            }
+        },
+    ])
+    console.log(best_peers);
 }
