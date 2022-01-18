@@ -59,28 +59,24 @@ exports.getNewTorrents = async (req, res) => {
     res.send(await Torrent.find().sort({ 'created_at': -1 }).select('-__v').limit(20));
 }
 
+/**
+ * Get best Torrents
+ * @param {Request} req 
+ * @param {Result} res 
+ */
 exports.getBestTorrents = async (req, res) => {
-    let best_peers = await Peer.aggregate([
-        {
-            "$group": {
-                "_id": { "$toLower": "$hash" },
-                "count": { "$sum": 1 }
-            }
-        },
-        {
-            "$group": {
-                "_id": null,
-                "counts": {
-                    "$push": { "k": "$_id", "v": "$count" }
-                },
-            }
-        },
-        { $sort: { v: 1 } },
-        {
-            "$replaceRoot": {
-                "newRoot": { "$arrayToObject": "$counts" }
-            }
-        },
-    ])
-    console.log(best_peers);
+    let best_peers = await Peer.getBestPeers();
+    res.send(best_peers);
+}
+
+/**
+ * Search torrent by name
+ * @param {Request} req
+ * @param {result} res
+ * @returns {Array}
+ */
+exports.search = async (req, res) => {
+    let search = new RegExp(req.query.search, 'i');
+    let torrents = await Torrent.find({ $and: [{ $or: [{ name: search }] }] });
+    res.send(torrents);
 }
