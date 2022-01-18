@@ -14,6 +14,13 @@ const Torrent = mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
+    mediainfo: {
+        type: String,
+    },
     hash: {
         type: String,
         required: true
@@ -21,6 +28,22 @@ const Torrent = mongoose.Schema({
     size: {
         type: Number,
         required: true
+    },
+    seeders: {
+        type: Number,
+        default: 0
+    },
+    completed: {
+        type: Number,
+        default: 0
+    },
+    leechers: {
+        type: Number,
+        default: 0
+    },
+    validated: {
+        type: Number,
+        default: 0
     },
     created_at: {
         type: Date,
