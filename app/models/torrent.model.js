@@ -48,6 +48,10 @@ const Torrent = mongoose.Schema({
     created_at: {
         type: Date,
         required: true
+    },
+    updated_at: {
+        type: Date,
+        default: new Date()
     }
 });
 
