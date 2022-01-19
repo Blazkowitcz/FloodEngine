@@ -21,7 +21,7 @@ exports.signin = async (req, res) => {
         if(!match){
             return res.status(400).json({message: "Error during login"});
         }
-        let payload = { user: {id: user.id, username: user.username, passkey: user.passkey}};
+        let payload = { user: {id: user._id, username: user.username, passkey: user.passkey}};
         jwt.sign(
             payload,
             config.salt,
