@@ -1,6 +1,9 @@
 # Flood Engine
 ## The Nodejs Torrent Server
 
+[![Node.js](https://github.com/Blazkowitcz/FloodEngine/actions/workflows/nodejs.yaml/badge.svg?branch=master)](https://github.com/Blazkowitcz/FloodEngine/actions/workflows/nodejs.yaml) [![CodeQL](https://github.com/Blazkowitcz/FloodEngine/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/Blazkowitcz/FloodEngine/actions/workflows/codeql-analysis.yml)
+
+
 Flood Engine is a full torrent server powered by NodeJs. It is just the backend part so you will need to use your own frontend part. The objective is to separate the layers to increase performance and balance on application. Flood Engine use MongoDB database.
 
 ## Features
