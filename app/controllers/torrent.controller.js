@@ -19,6 +19,7 @@ exports.upload = async (req, res) => {
         let filename = crypto.randomBytes(16).toString("hex") + '.torrent';
         torrent = new Torrent({
             name: data.name,
+            description: req.body.description,
             filename: filename,
             hash: data.infoHash,
             user_id: 1,
@@ -48,6 +49,22 @@ exports.download = async (req, res) => {
         'Content-Type': 'text/plain',
     });
     return res.end(new_torrent);
+}
+
+/**
+ * Update a Torrent
+ * @param {Request} req 
+ * @param {Result} res 
+ */
+exports.update = async (req, res) => {
+    let torrent = await Torrent.findOne({ _id: req.params.id });
+    if(torrent !== null && torrent.user_id === req.user.id){
+        torrent.name = req.body.name
+        torrent.description = req.body.description;
+        torrent.updated_at = new Date();
+        torrent.save();
+    }
+    res.send(true);
 }
 
 /**
