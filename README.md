@@ -8,6 +8,7 @@ Flood Engine is a full torrent server powered by NodeJs. It is just the backend 
 - Register or log in
 - Upload a new torrent
 - Download a torrent
+- Update a torrent
 - Communicate with Torrent client and set yourself as peer for torrents
 - Get new torrents
 - Get best torrents
@@ -17,7 +18,6 @@ Flood Engine is a full torrent server powered by NodeJs. It is just the backend 
 | Topic |
 | ------ |
 | Update Seeders, Leechers and completed automatically on torrent announce |
-| Update a torrent |
 | Delete a torrent |
 | History of all downloads |
 
