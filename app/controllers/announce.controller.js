@@ -11,7 +11,6 @@ const History = require('../models/history.model');
  * @return {Buffer}
  */
 exports.announce = async (req, res) => {
-    console.log(req.query);
     let user = await User.findOne({passkey: req.params.passkey});
     let peers = [];
     if(user !== null){
@@ -24,9 +23,9 @@ exports.announce = async (req, res) => {
         peer.ip = req.headers.host.substring(0, req.headers.host.indexOf(':'));
         peer.save();
         peers = await Peer.find({hash: req.query.info_hash}).select('ip port -_id');
-    }
-    if(req.query.left == 0){
-        setHistory(req.query.info_hash, user);
+        if(req.query.left == 0){
+            setHistory(req.query.info_hash, user);
+        }
     }
     let data = {
         'interval' : 2700,
@@ -59,7 +58,7 @@ function reformatPeers(peers){
  * @param {User} user 
  */
 async function setHistory(hash, user){
-    let history = await History.findOne({user_id: user._id, hash: hash});
+    let history = await History.findOne({user_id: user.id, hash: hash});
     if(history === null){
         history = new History({user_id: user._id, hash: hash, date: new Date()});
         history.save();
