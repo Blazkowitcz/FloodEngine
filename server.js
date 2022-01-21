@@ -5,6 +5,7 @@ const cors = require('cors');
 const app = express();
 const config = require('./config.json');
 const InitiateMongoServer = require('./app/modules/database.module');
+const crons = require('./app/modules/cron.module');
 
 InitiateMongoServer();
 
