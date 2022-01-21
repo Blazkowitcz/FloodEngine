@@ -64,6 +64,7 @@ NODE_ENV=production node app
 | jsonwebtoken | 8.5.1 |
 | mongoose | 6.1.6 |
 | mongoose-sequence | 5.3.1 |
+| node-cron | 3.0.0 |
 | parse-torrent | 9.1.4 |
 
    [node.js]: <http://nodejs.org>
