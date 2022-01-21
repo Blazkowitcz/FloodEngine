@@ -68,6 +68,26 @@ exports.update = async (req, res) => {
 }
 
 /**
+ * Delete a Torrent
+ * @param {Request} req 
+ * @param {Result} res 
+ * @returns 
+ */
+exports.delete = async (req, res) => {
+    let torrent = await Torrent.findOne({_id: req.params.id});
+    if(torrent !== null && torrent.user_id === req.user.id){
+        let diff = Math.ceil(Math.abs(new Date() - new Date(torrent.created_at)) / 36e5);
+        if(diff < 1){
+            Torrent.deleteOne({_id: torrent._id});
+        }else {
+            res.send('You only have 1 hour after creation do delete the torrent');
+            return;
+        }
+    }
+    res.send(true);
+}
+
+/**
  * Get new Torrents
  * @param {Request} req 
  * @param {Result} res 
