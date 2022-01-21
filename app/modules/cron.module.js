@@ -1,1 +1,1 @@
-const hystory_cron = require('./crons/history.cron');
+const history_cron = require('./crons/history.cron');
