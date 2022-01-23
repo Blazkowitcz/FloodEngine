@@ -29,6 +29,14 @@ const Torrent = mongoose.Schema({
         type: Number,
         required: true
     },
+    category: {
+        type: String,
+        required: true
+    },
+    subcategory: {
+        type: String,
+        required: true
+    },
     seeders: {
         type: Number,
         default: 0
