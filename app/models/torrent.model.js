@@ -29,11 +29,11 @@ const Torrent = mongoose.Schema({
         type: Number,
         required: true
     },
-    category: {
+    category_id: {
         type: String,
         required: true
     },
-    subcategory: {
+    subcategory_id: {
         type: String,
         required: true
     },

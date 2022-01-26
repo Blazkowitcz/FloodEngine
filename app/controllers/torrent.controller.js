@@ -24,7 +24,7 @@ exports.upload = async (req, res) => {
             hash: data.infoHash,
             category_id: req.body.category_id,
             subcategory_id: req.body.subcategory_id,
-            user_id: 1,
+            user_id: req.user.id,
             size: data.length,
             created_at: new Date()
         });

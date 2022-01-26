@@ -12,7 +12,7 @@ module.exports = app => {
     /**
      * POST
      */
-    app.post('/upload', TorrentController.upload);
+    app.post('/upload',auth.checkToken, TorrentController.upload);
     app.post('/torrents/:id/edit', auth.checkToken, TorrentController.update);
     app.post('/torrents/:id/delete', auth.checkToken, TorrentController.delete);
 };
