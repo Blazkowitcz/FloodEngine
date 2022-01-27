@@ -54,6 +54,16 @@ exports.download = async (req, res) => {
 }
 
 /**
+ * Get Torrent detail
+ * @param {Request} req 
+ * @param {Result} res 
+ */
+exports.detail = async (req, res) => {
+    let torrent = await Torrent.findOne({_id: req.params.id});
+    res.send(torrent);
+}
+
+/**
  * Update a Torrent
  * @param {Request} req 
  * @param {Result} res 

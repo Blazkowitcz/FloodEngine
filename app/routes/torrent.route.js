@@ -5,9 +5,10 @@ module.exports = app => {
     /**
      * GET
      */
-    app.get('/download/:id', auth.checkToken, TorrentController.download);
+    app.get('/torrents/:id/download', auth.checkToken, TorrentController.download);
     app.get('/torrents/news', auth.checkToken, TorrentController.getNewTorrents);
     app.get('/torrents/best', auth.checkToken, TorrentController.getBestTorrents);
+    app.get('/torrents/:id', auth.checkToken, TorrentController.detail);
 
     /**
      * POST
