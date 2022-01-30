@@ -22,7 +22,9 @@ exports.upload = async (req, res) => {
             description: req.body.description,
             filename: filename,
             hash: data.infoHash,
-            user_id: 1,
+            category_id: req.body.category_id,
+            subcategory_id: req.body.subcategory_id,
+            user_id: req.user.id,
             size: data.length,
             created_at: new Date()
         });
@@ -52,6 +54,16 @@ exports.download = async (req, res) => {
 }
 
 /**
+ * Get Torrent detail
+ * @param {Request} req 
+ * @param {Result} res 
+ */
+exports.detail = async (req, res) => {
+    let torrent = await Torrent.findOne({_id: req.params.id});
+    res.send(torrent);
+}
+
+/**
  * Update a Torrent
  * @param {Request} req 
  * @param {Result} res 
@@ -63,6 +75,26 @@ exports.update = async (req, res) => {
         torrent.description = req.body.description;
         torrent.updated_at = new Date();
         torrent.save();
+    }
+    res.send(true);
+}
+
+/**
+ * Delete a Torrent
+ * @param {Request} req 
+ * @param {Result} res 
+ * @returns 
+ */
+exports.delete = async (req, res) => {
+    let torrent = await Torrent.findOne({_id: req.params.id});
+    if(torrent !== null && torrent.user_id === req.user.id){
+        let diff = Math.ceil(Math.abs(new Date() - new Date(torrent.created_at)) / 36e5);
+        if(diff < 1){
+            Torrent.deleteOne({_id: torrent._id});
+        }else {
+            res.send('You only have 1 hour after creation do delete the torrent');
+            return;
+        }
     }
     res.send(true);
 }
