@@ -20,7 +20,7 @@ exports.categories = async (req, res) => {
  * @returns {Array}
  */
 exports.subcategories = async (req, res) => {
-    let subcategories = await Subcategory.find({category_id : req.body.category_id}).select('_id name');
+    let subcategories = await Subcategory.find({category_id : {$eq: req.body.category_id}}).select('_id name');
     res.send(subcategories);
 }
 
@@ -30,9 +30,9 @@ exports.subcategories = async (req, res) => {
  * @param {Result} res 
  */
 exports.createCategory = async (req, res) => {
-    let category = await Category.findOne({name: req.body.name});
+    let category = await Category.findOne({name: {$eq: req.body.name}});
     if(category === null){
-        category = new Category({name: req.body.name, slug: string_util.stringToSlug(req.body.name), icon: req.body.icon});
+        category = new Category({name: {$eq: req.body.name}, slug: {$eq: string_util.stringToSlug(req.body.name)}, icon: {$eq: req.body.icon} });
         await category.save();
     }
     res.send(true);
@@ -44,9 +44,9 @@ exports.createCategory = async (req, res) => {
  * @param {Result} res 
  */
 exports.createSubcategory = async (req, res) => {
-    let subcategory = await Subcategory.findOne({name: req.body.name, category_id: req.body.category_id});
+    let subcategory = await Subcategory.findOne({name: {$eq: req.body.name}, category_id: {$eq: req.body.category_id}});
     if(subcategory === null){
-        subcategory = new Subcategory({name: req.body.name, slug: string_util.stringToSlug(req.body.name), category_id: req.body.category_id, icon: req.body.icon});
+        subcategory = new Subcategory({name: {$eq : req.body.name}, slug: {$eq: string_util.stringToSlug(req.body.name)}, category_id: {$eq: req.body.category_id}, icon: {$eq: req.body.icon}});
         await subcategory.save();
     }
     res.send(true);

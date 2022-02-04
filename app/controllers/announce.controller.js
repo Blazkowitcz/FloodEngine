@@ -11,7 +11,7 @@ const History = require('../models/history.model');
  * @return {Buffer}
  */
 exports.announce = async (req, res) => {
-    let user = await User.findOne({passkey: req.params.passkey});
+    let user = await User.findOne({passkey: {$eq: req.params.passkey}});
     let peers = [];
     if(user !== null){
         let peer = await Peer.findOne({hash: req.query.info_hash, user_id : user._id, ip: req.headers.host.substring(0, req.headers.host.indexOf(':')), port: req.query.port});
