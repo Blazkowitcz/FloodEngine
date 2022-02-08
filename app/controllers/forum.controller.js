@@ -133,7 +133,6 @@ exports.unlike = async (req, res) => {
     let message_id = {$eq: req.body.message_id};
     let like = await Like.findOne({user_id: req.user.id, message_id: message_id});
     if(like !== null){
-        console.log(like);
         await Like.deleteOne({_id: like._id});
         res.send(true);
         return;
