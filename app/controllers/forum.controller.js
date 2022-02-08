@@ -1,6 +1,7 @@
 const Forum = require('../models/forum.model');
 const Topic = require('../models/topic.model');
 const Message = require('../models/message.model');
+const Like = require('../models/like.model');
 const StringUtil = require('../utils/string.util');
 const slug = require('slug');
 
@@ -100,6 +101,42 @@ exports.createMessage = async (req, res) => {
             res.send(true);
             return;
         }
+    }
+    res.send(false);
+}
+
+/**
+ * Like a Message
+ * @param {Request} req 
+ * @param {Result} res 
+ * @returns {Boolean}
+ */
+exports.like = async (req, res) => {
+    let message_id = req.body.message_id;
+    let like = await Like.findOne({user_id: req.user.id, message_id: {$eq: message_id}});
+    if(like === null){
+        like = new Like({user_id: req.user.id, message_id: message_id});
+        await like.save();
+        res.send(true);
+        return;
+    }
+    res.send(false);
+}
+
+/**
+ * Unlike a Message
+ * @param {Request} req 
+ * @param {Result} res 
+ * @returns 
+ */
+exports.unlike = async (req, res) => {
+    let message_id = {$eq: req.body.message_id};
+    let like = await Like.findOne({user_id: req.user.id, message_id: message_id});
+    if(like !== null){
+        console.log(like);
+        await Like.deleteOne({_id: like._id});
+        res.send(true);
+        return;
     }
     res.send(false);
 }

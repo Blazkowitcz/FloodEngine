@@ -15,4 +15,6 @@ module.exports = app => {
     app.post('/forums/create', auth.checkToken, ForumController.createForum);
     app.post('/forums/:forum/create', auth.checkToken, ForumController.createTopic);
     app.post('/forums/:forum/:topic/create', auth.checkToken, ForumController.createMessage);
+    app.post('/forums/:forum/:topic/like', auth.checkToken, ForumController.like);
+    app.post('/forums/:forum/:topic/unlike', auth.checkToken, ForumController.unlike);
 };
