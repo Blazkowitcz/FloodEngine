@@ -9,5 +9,11 @@
         "password": "password",
         "database_name": "flood_engine"
     },
+    "password_requirement": {
+        "min_length": 0,
+        "min_uppercase": 0,
+        "min_number": 0,
+        "min_special": 0
+    },
     "salt": "ThisPasswordMustBeChanged"
 }
