@@ -63,6 +63,7 @@ NODE_ENV=production node app
 | crypto | 1.0.1 |
 | express | 4.17.2 |
 | express-fileupload | 1.2.1 |
+| express-rate-limit | 6.2.0 |
 | fs | 0.0.1-security |
 | jsonwebtoken | 8.5.1 |
 | mongoose | 6.1.6 |
