@@ -8,26 +8,45 @@ Flood Engine is a full torrent server powered by NodeJs. It is just the backend 
 
 ## Features
 
-- Register or log in
-- Upload a new torrent
-- Download a torrent
-- Update a torrent
-- Communicate with Torrent client and set yourself as peer for torrents
-- Get new torrents
-- Get best torrents
-- Torrent Categories and Subcategories
-- Forum core (Forums -> Topics -> Messages)
-
-## Incoming
+### Torrents
 
 | Topic |
 | ------ |
-| Update Seeders, Leechers and completed automatically on torrent announce |
-| Delete a torrent |
-| History of all downloads |
-| Forum management (Edit and Delete) |
+| Create Torrent |
+| Update Torrent |
+| Delete Torrent |
+| Torrent Detail |
+| Get new Torrents |
+| Get best Torrents |
+| Announce from client |
+| Get Peers list |
 
-... and more
+
+### Forums
+
+| Topic |
+| ------ |
+| Create Forum |
+| Create Topic |
+| Create Message |
+| Like Message |
+| Subscribe to Topic |
+
+### Users
+
+| Topic |
+| ------ |
+| Register |
+| Log In |
+| Check if user is connected |
+
+### System
+
+| Topic |
+| ------ |
+| Define a request Limiter |
+
+## New Feature
 
 ## Tech
 
@@ -63,6 +82,7 @@ NODE_ENV=production node app
 | crypto | 1.0.1 |
 | express | 4.17.2 |
 | express-fileupload | 1.2.1 |
+| express-rate-limit | 6.2.0 |
 | fs | 0.0.1-security |
 | jsonwebtoken | 8.5.1 |
 | mongoose | 6.1.6 |

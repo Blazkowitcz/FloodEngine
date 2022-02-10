@@ -19,11 +19,11 @@ exports.upload = async (req, res) => {
         let filename = crypto.randomBytes(16).toString("hex") + '.torrent';
         torrent = new Torrent({
             name: data.name,
-            description: req.body.description,
+            description: {$eq: req.body.description},
             filename: filename,
             hash: data.infoHash,
-            category_id: req.body.category_id,
-            subcategory_id: req.body.subcategory_id,
+            category_id: {$eq: req.body.category_id},
+            subcategory_id: {$eq: req.body.subcategory_id},
             user_id: req.user.id,
             size: data.length,
             created_at: new Date()
@@ -41,7 +41,7 @@ exports.upload = async (req, res) => {
  * @returns {Buffer}
  */
 exports.download = async (req, res) => {
-    let torrent = await Torrent.findOne({ _id: req.params.id });
+    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id}});
     let data = parse_torrent(fs.readFileSync('./public/torrents/' + torrent.filename));
     data.announce[0] = 'http://' + config.address + ':' + config.port + "/announce/" + req.user.passkey;
     let new_torrent = parse_torrent.toTorrentFile(data);
@@ -59,7 +59,7 @@ exports.download = async (req, res) => {
  * @param {Result} res 
  */
 exports.detail = async (req, res) => {
-    let torrent = await Torrent.findOne({_id: req.params.id});
+    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}});
     res.send(torrent);
 }
 
@@ -69,7 +69,7 @@ exports.detail = async (req, res) => {
  * @param {Result} res 
  */
 exports.update = async (req, res) => {
-    let torrent = await Torrent.findOne({ _id: req.params.id });
+    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id} });
     if(torrent !== null && torrent.user_id === req.user.id){
         torrent.name = req.body.name
         torrent.description = req.body.description;
@@ -86,11 +86,11 @@ exports.update = async (req, res) => {
  * @returns 
  */
 exports.delete = async (req, res) => {
-    let torrent = await Torrent.findOne({_id: req.params.id});
+    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}});
     if(torrent !== null && torrent.user_id === req.user.id){
         let diff = Math.ceil(Math.abs(new Date() - new Date(torrent.created_at)) / 36e5);
         if(diff < 1){
-            Torrent.deleteOne({_id: torrent._id});
+            Torrent.deleteOne({_id: {$eq: torrent._id}});
         }else {
             res.send('You only have 1 hour after creation do delete the torrent');
             return;

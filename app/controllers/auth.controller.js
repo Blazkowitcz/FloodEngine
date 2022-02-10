@@ -52,6 +52,10 @@ exports.signup = async (req, res) => {
         if(user !== null){
             res.send("User already exist");
         } else {
+            if(!minimumRequirement(password)){
+                res.send("Password does not fullfill the minimum requirements");
+                return;
+            }
             let passkey = crypto.randomBytes(16).toString('hex');
             let salt = await bcrypt.genSalt(10);
             user = new User({username: username, email: email, password: await bcrypt.hash(password, salt), passkey : passkey});
@@ -61,4 +65,22 @@ exports.signup = async (req, res) => {
     } catch (e){
         res.send(e);
     }
+}
+
+/**
+ * Check if Password have minimum requirement
+ * @param {String} password 
+ * @returns {Boolean}
+ */
+function minimumRequirement(password){
+    if(password.length < config.password_requirement.min_length){
+        return false;
+    }else if(password.length - password.replace(/[A-Z]/g, '').length < config.password_requirement.min_uppercase){
+        return false;
+    }else if(password.length - password.replace(/[^0-9]/g,'').length < config.password_requirement.min_number){
+        return false;
+    }else if(password.match(/[@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g).length < config.password_requirement.min_special){
+        return false;
+    }
+    return true;
 }
