@@ -10,6 +10,8 @@ Flood Engine is a full torrent server powered by NodeJs. It is just the backend 
 
 ### Torrents
 
+| Topic |
+| ------ |
 | Create Torrent |
 | Update Torrent |
 | Delete Torrent |
@@ -22,6 +24,8 @@ Flood Engine is a full torrent server powered by NodeJs. It is just the backend 
 
 ### Forums
 
+| Topic |
+| ------ |
 | Create Forum |
 | Create Topic |
 | Create Message |
@@ -30,12 +34,16 @@ Flood Engine is a full torrent server powered by NodeJs. It is just the backend 
 
 ### Users
 
+| Topic |
+| ------ |
 | Register |
 | Log In |
 | Check if user is connected |
 
 ### System
 
+| Topic |
+| ------ |
 | Define a request Limiter |
 
 ## Incoming
