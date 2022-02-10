@@ -8,15 +8,35 @@ Flood Engine is a full torrent server powered by NodeJs. It is just the backend 
 
 ## Features
 
-- Register or log in
-- Upload a new torrent
-- Download a torrent
-- Update a torrent
-- Communicate with Torrent client and set yourself as peer for torrents
-- Get new torrents
-- Get best torrents
-- Torrent Categories and Subcategories
-- Forum core (Forums -> Topics -> Messages)
+### Torrents
+
+| Create Torrent |
+| Update Torrent |
+| Delete Torrent |
+| Torrent Detail |
+| Get new Torrents |
+| Get best Torrents |
+| Announce from client |
+| Get Peers list |
+
+
+### Forums
+
+| Create Forum |
+| Create Topic |
+| Create Message |
+| Like Message |
+| Subscribe to Topic |
+
+### Users
+
+| Register |
+| Log In |
+| Check if user is connected |
+
+### System
+
+| Define a request Limiter |
 
 ## Incoming
 
