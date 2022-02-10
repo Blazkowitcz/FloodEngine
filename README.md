@@ -46,16 +46,7 @@ Flood Engine is a full torrent server powered by NodeJs. It is just the backend 
 | ------ |
 | Define a request Limiter |
 
-## Incoming
-
-| Topic |
-| ------ |
-| Update Seeders, Leechers and completed automatically on torrent announce |
-| Delete a torrent |
-| History of all downloads |
-| Forum management (Edit and Delete) |
-
-... and more
+## New Feature
 
 ## Tech
 
