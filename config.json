@@ -15,5 +15,7 @@
         "min_number": 0,
         "min_special": 0
     },
+    "request_limit": 100,
+    "request_limit_time_window": 1,
     "salt": "ThisPasswordMustBeChanged"
 }
