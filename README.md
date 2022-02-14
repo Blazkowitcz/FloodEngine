@@ -56,7 +56,7 @@ Flood Engine uses a number of open source projects to work properly:
 
 ## Installation
 
-Flood Engine requires [Node.js](https://nodejs.org/) v12+ to run.
+Flood Engine requires [Node.js](https://nodejs.org/) v14+ to run.
 Install the dependencies and devDependencies and start the server.
 ```sh
 cd FloodEngine
