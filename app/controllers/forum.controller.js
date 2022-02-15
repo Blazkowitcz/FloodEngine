@@ -108,6 +108,54 @@ exports.createMessage = async (req, res) => {
 }
 
 /**
+ * 
+ * @param {Request} req 
+ * @param {Result} res 
+ * @returns 
+ */
+exports.getMessageContent = async (req, res) => {
+    let message = await Message.findOne({_id: {$eq: req.body.id}, user_id: req.user.id});
+    if(message){
+        res.send(message.content);
+        return;
+    }
+    res.send(false);
+}
+
+/**
+ * Edit a Message
+ * @param {Request} req 
+ * @param {Result} res 
+ * @returns 
+ */
+exports.editMessage = async (req, res) => {
+    let message = await Message.findOne({_id: {$eq: req.body.id}, user_id: req.user.id});
+    if(message){
+        message.content = req.body.content;
+        await message.save();
+        res.send(true);
+        return;
+    }
+    res.send(false);
+}
+
+/**
+ * Delete a Message
+ * @param {Request} req 
+ * @param {Result} res 
+ * @returns 
+ */
+exports.deleteMessage = async (req, res) => {
+    let message = await Message.findOne({_id: {$eq: req.body.id}, user_id: req.user.id});
+    if(message){
+        await Message.deleteOne({_id: message._id});
+        res.send(true);
+        return;
+    }
+    res.send(false);
+}
+
+/**
  * Like a Message
  * @param {Request} req 
  * @param {Result} res 
