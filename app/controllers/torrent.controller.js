@@ -4,6 +4,7 @@ const fs = require('fs');
 const config = require('../../config.json');
 const torrent_utils = require('../utils/torrent.util');
 const Torrent = require('../models/torrent.model');
+const TorrentWarning = require('../models/torrent_warning.model');
 const Peer = require('../models/peer.model');
 
 /**
@@ -128,4 +129,21 @@ exports.search = async (req, res) => {
     let search = new RegExp(req.query.search, 'i');
     let torrents = await Torrent.find({ $and: [{ $or: [{ name: search }] }] });
     res.send(torrents);
+}
+
+/**
+ * Warn a Torrent
+ * @param {Request} req 
+ * @param {Result} res 
+ * @returns 
+ */
+exports.warning = async (req, res) => {
+    let warning = await TorrentWarning.findOne({torrent_id: {$eq: req.body.torrent_id}, user_id: req.user.id});
+    if(!warning){
+        warning = new TorrentWarning({torrent_id: {$eq: req.body.torrent_id}, content: {$eq: req.body.content}, user_id: req.user.id, date: new Date()});
+        await warning.save();
+        res.send(true);
+        return;
+    }
+    res.send(false);
 }

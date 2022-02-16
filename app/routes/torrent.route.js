@@ -16,4 +16,5 @@ module.exports = app => {
     app.post('/upload',auth.checkToken, TorrentController.upload);
     app.post('/torrents/:id/edit', auth.checkToken, TorrentController.update);
     app.post('/torrents/:id/delete', auth.checkToken, TorrentController.delete);
+    app.post('/torrents/:id/warn', auth.checkToken, TorrentController.warning);
 };
