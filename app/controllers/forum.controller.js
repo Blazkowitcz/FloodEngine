@@ -108,7 +108,7 @@ exports.createMessage = async (req, res) => {
 }
 
 /**
- * 
+ * Get Message content
  * @param {Request} req 
  * @param {Result} res 
  * @returns 
