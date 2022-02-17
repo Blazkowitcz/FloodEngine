@@ -63,7 +63,7 @@ exports.signup = async (req, res) => {
             res.send(true);
         }
     } catch (e){
-        res.send(e);
+        res.send("An error occured");
     }
 }
 
