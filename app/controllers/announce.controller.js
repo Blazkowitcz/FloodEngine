@@ -22,7 +22,7 @@ exports.announce = async (req, res) => {
         peer.port = req.query.port;
         peer.ip = req.headers.host.substring(0, req.headers.host.indexOf(':'));
         peer.save();
-        peers = await Peer.find({hash: req.query.info_hash}).select('ip port -_id');
+        peers = await Peer.find({hash: {$eq: req.query.info_hash}}).select('ip port -_id');
         if(req.query.left == 0){
             setHistory(req.query.info_hash, user);
         }
