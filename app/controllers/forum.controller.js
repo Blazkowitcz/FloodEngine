@@ -24,9 +24,9 @@ exports.forums = async (req, res) => {
  * @param {Result} res 
  */
 exports.createForum = async (req, res) => {
-    let forum = await Forum.findOne({name: req.body.name});
+    let forum = await Forum.findOne({name: {$eq: req.body.name}});
     if(forum === null){
-        forum = new Forum({name: req.body.name, slug: slug(req.body.name)});
+        forum = new Forum({name: {$eq: req.body.name}, slug: slug(req.body.name)});
         await forum.save();
     }
     res.send(true);
@@ -39,9 +39,9 @@ exports.createForum = async (req, res) => {
  * @returns {Array}
  */
 exports.topics = async (req, res) => {
-    let forum = await Forum.findOne({_id: req.params.forum});
+    let forum = await Forum.findOne({_id: {$eq: req.params.forum}});
     if(forum !== null){
-        let topics = await Topic.find({forum_id: forum._id});
+        let topics = await Topic.find({forum_id: {$eq: forum._id}});
         res.send(topics);
         return;
     }
@@ -54,11 +54,11 @@ exports.topics = async (req, res) => {
  * @param {Result} res 
  */
 exports.createTopic = async (req, res) => {
-    let forum = await Forum.findOne({_id: req.params.forum});
+    let forum = await Forum.findOne({_id: {$eq: req.params.forum}});
     if(forum !== null){
-        let topic = await Topic.findOne({forum_id: forum._id, name: req.body.name});
+        let topic = await Topic.findOne({forum_id: forum._id, name: {$eq: req.body.name}});
         if(topic === null) {
-            topic = new Topic({name: req.body.name, slug: slug(req.body.name), forum_id: forum._id, date: new Date()});
+            topic = new Topic({name: {$eq: req.body.name}, slug: slug(req.body.name), forum_id: forum._id, date: new Date()});
             await topic.save();
             res.send(true);
             return;
@@ -74,9 +74,9 @@ exports.createTopic = async (req, res) => {
  * @returns {Array}
  */
 exports.messages = async (req ,res) => {
-    let forum = await Forum.findOne({_id: req.params.forum});
+    let forum = await Forum.findOne({_id: {$eq: req.params.forum}});
     if(forum !== null){
-        let topic = await Topic.findOne({_id: req.params.topic});
+        let topic = await Topic.findOne({_id: {$eq: req.params.topic}});
         if(topic !== null) {
             let messages = await Message.find({topic_id: topic._id});
             res.send(messages);
@@ -93,11 +93,11 @@ exports.messages = async (req ,res) => {
  * @returns 
  */
 exports.createMessage = async (req, res) => {
-    let forum = await Forum.findOne({_id: req.params.forum});
+    let forum = await Forum.findOne({_id: {$eq: req.params.forum}});
     if(forum !== null){
-        let topic = await Topic.findOne({_id: req.params.topic});
+        let topic = await Topic.findOne({_id: {$eq: req.params.topic}});
         if(topic !== null) {
-            let message = new Message({content: req.body.content, topic_id: topic._id, user_id: req.user.id, date: new Date()});
+            let message = new Message({content: {$eq: req.body.content}, topic_id: topic._id, user_id: req.user.id, date: new Date()});
             message.save();
             createAlertForMessage(topic._id);
             res.send(true);
@@ -196,9 +196,9 @@ exports.unlike = async (req, res) => {
  * @param {Result} res 
  */
 exports.subscribe = async (req, res) => {
-    let subscription = await Subscription.findOne({user_id: req.user.id, topic_id: req.params.topic});
+    let subscription = await Subscription.findOne({user_id: req.user.id, topic_id: {$eq: req.params.topic}});
     if (subscription === null){
-        subscription = new Subscription({user_id: req.user.id, topic_id: req.params.topic});
+        subscription = new Subscription({user_id: req.user.id, topic_id: {$eq: req.params.topic}});
         await subscription.save();
         res.send(true);
         return;
@@ -212,7 +212,7 @@ exports.subscribe = async (req, res) => {
  * @param {Result} res 
  */
 exports.unsubscribe = async (req, res) => {
-    let subscription = await Subscription.findOne({user_id: req.user.id, topic_id: req.params.topic});
+    let subscription = await Subscription.findOne({user_id: req.user.id, topic_id: {$eq: req.params.topic}});
     if(subscription !== null){
         await Subscription.deleteOne({_id: subscription._id});
         res.send(true);
@@ -227,8 +227,8 @@ exports.unsubscribe = async (req, res) => {
  * @returns 
  */
 async function createAlertForMessage(topic_id){
-    let topic = await Topic.findOne({_id: topic_id});
-    let subscriptions = await Subscription.find({topic_id: topic_id});
+    let topic = await Topic.findOne({_id: {$eq: topic_id}});
+    let subscriptions = await Subscription.find({topic_id: {$eq: topic_id}});
     for(let subscription of subscriptions){
         if(subscription.user_id !== req.user.id){
             let alert = new Alert({user_id: req.user.id, message: req.user.username + ' left a message on topic : ' + topic.name, date: new Date(), read: false});

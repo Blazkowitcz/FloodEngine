@@ -13,7 +13,7 @@ const config = require ('../../config.json');
 exports.signin = async (req, res) => {
     let { username, password } = req.body;
     try{
-        let user = await User.findOne({username: username});
+        let user = await User.findOne({username: {$eq: username}});
         if(!user){
             return res.status(400).json({message: "Error during login"});
         }
@@ -48,7 +48,7 @@ exports.signin = async (req, res) => {
 exports.signup = async (req, res) => {
     let { username, email, password } = req.body;
     try{
-        let user = await User.findOne({username: username});
+        let user = await User.findOne({username: {$eq: username}});
         if(user !== null){
             res.send("User already exist");
         } else {
