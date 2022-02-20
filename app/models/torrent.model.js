@@ -50,8 +50,12 @@ const Torrent = mongoose.Schema({
         default: 0
     },
     validated: {
-        type: Number,
-        default: 0
+        type: Boolean,
+        default: false
+    },
+    blocked: {
+        type: Boolean,
+        default: false
     },
     created_at: {
         type: Date,
