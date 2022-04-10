@@ -20,11 +20,11 @@ exports.upload = async (req, res) => {
         let filename = crypto.randomBytes(16).toString("hex") + '.torrent';
         torrent = new Torrent({
             name: data.name,
-            description: {$eq: req.body.description},
+            description: req.body.description,
             filename: filename,
             hash: data.infoHash,
-            category_id: {$eq: req.body.category_id},
-            subcategory_id: {$eq: req.body.subcategory_id},
+            category_id: req.body.category_id,
+            subcategory_id: req.body.subcategory_id,
             user_id: req.user.id,
             size: data.length,
             created_at: new Date()
