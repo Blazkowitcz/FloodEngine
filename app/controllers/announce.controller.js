@@ -11,10 +11,10 @@ const History = require('../models/history.model');
  * @return {Buffer}
  */
 exports.announce = async (req, res) => {
-    let user = await User.findOne({passkey: {$eq: req.params.passkey}});
+    let user = await User.findOne({passkey: {$eq: req.params.passkey}}).lean();
     let peers = [];
     if(user !== null){
-        let peer = await Peer.findOne({hash: {$eq: req.query.info_hash}, user_id : user._id, ip: req.headers.host.substring(0, req.headers.host.indexOf(':')), port: {$eq: req.query.port}});
+        let peer = await Peer.findOne({hash: {$eq: req.query.info_hash}, user_id : user._id, ip: req.headers.host.substring(0, req.headers.host.indexOf(':')), port: {$eq: req.query.port}}).lean();
         if(peer === null){
             peer = await new Peer({hash: {$eq: req.query.info_hash}, user_id: user._id});
         }
@@ -22,7 +22,7 @@ exports.announce = async (req, res) => {
         peer.port = req.query.port;
         peer.ip = req.headers.host.substring(0, req.headers.host.indexOf(':'));
         peer.save();
-        peers = await Peer.find({hash: {$eq: req.query.info_hash}}).select('ip port -_id');
+        peers = await Peer.find({hash: {$eq: req.query.info_hash}}).select('ip port -_id').lean();
         if(req.query.left == 0){
             setHistory(req.query.info_hash, user);
         }
@@ -58,7 +58,7 @@ function reformatPeers(peers){
  * @param {User} user 
  */
 async function setHistory(hash, user){
-    let history = await History.findOne({user_id: {$eq: user.id}, hash: {$eq: hash}});
+    let history = await History.findOne({user_id: {$eq: user.id}, hash: {$eq: hash}}).lean();
     if(history === null){
         history = new History({user_id: {$eq: user._id}, hash: {$eq: hash}, date: new Date()});
         history.save();

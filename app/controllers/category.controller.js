@@ -9,7 +9,7 @@ const string_util = require('../utils/string.util');
  * @returns {Array}
  */
 exports.categories = async (req, res) => {
-    let categories = await Category.find().select('_id name');
+    let categories = await Category.find().lean().select('_id name');
     res.send(categories);
 }
 
@@ -20,7 +20,7 @@ exports.categories = async (req, res) => {
  * @returns {Array}
  */
 exports.subcategories = async (req, res) => {
-    let subcategories = await Subcategory.find({category_id : {$eq: req.body.category_id}}).select('_id name');
+    let subcategories = await Subcategory.find({category_id : {$eq: req.body.category_id}}).lean().select('_id name');
     res.send(subcategories);
 }
 
@@ -44,7 +44,7 @@ exports.createCategory = async (req, res) => {
  * @param {Result} res 
  */
 exports.createSubcategory = async (req, res) => {
-    let subcategory = await Subcategory.findOne({name: {$eq: req.body.name}, category_id: {$eq: req.body.category_id}});
+    let subcategory = await Subcategory.findOne({name: {$eq: req.body.name}, category_id: {$eq: req.body.category_id}}).lean();
     if(subcategory === null){
         subcategory = new Subcategory({name: {$eq : req.body.name}, slug: {$eq: string_util.stringToSlug(req.body.name)}, category_id: {$eq: req.body.category_id}, icon: {$eq: req.body.icon}});
         await subcategory.save();

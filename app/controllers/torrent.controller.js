@@ -14,7 +14,7 @@ const Peer = require('../models/peer.model');
  */
 exports.upload = async (req, res) => {
     let data = parse_torrent(req.files.torrent.data);
-    let torrent = await Torrent.findOne({ hahs: data.infoHash });
+    let torrent = await Torrent.findOne({ hahs: data.infoHash }).lean();
     if (torrent === null) {
         let file = req.files.torrent;
         let filename = crypto.randomBytes(16).toString("hex") + '.torrent';
@@ -42,7 +42,7 @@ exports.upload = async (req, res) => {
  * @returns {Buffer}
  */
 exports.download = async (req, res) => {
-    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id}});
+    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id}}).lean();
     let data = parse_torrent(fs.readFileSync('./public/torrents/' + torrent.filename));
     data.announce[0] = 'http://' + config.address + ':' + config.port + "/announce/" + req.user.passkey;
     let new_torrent = parse_torrent.toTorrentFile(data);
@@ -60,7 +60,7 @@ exports.download = async (req, res) => {
  * @param {Result} res 
  */
 exports.detail = async (req, res) => {
-    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}});
+    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}}).lean();
     res.send(torrent);
 }
 
@@ -70,7 +70,7 @@ exports.detail = async (req, res) => {
  * @param {Result} res 
  */
 exports.update = async (req, res) => {
-    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id} });
+    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id} }).lean();
     if(torrent !== null && torrent.user_id === req.user.id){
         torrent.name = req.body.name
         torrent.description = req.body.description;
@@ -87,7 +87,7 @@ exports.update = async (req, res) => {
  * @returns 
  */
 exports.delete = async (req, res) => {
-    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}});
+    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}}).lean();
     if(torrent !== null && torrent.user_id === req.user.id){
         let diff = Math.ceil(Math.abs(new Date() - new Date(torrent.created_at)) / 36e5);
         if(diff < 1){
@@ -106,7 +106,7 @@ exports.delete = async (req, res) => {
  * @param {Result} res 
  */
 exports.getNewTorrents = async (req, res) => {
-    res.send(await Torrent.find().sort({ 'created_at': -1 }).select('-__v').limit(20));
+    res.send(await Torrent.find().lean().sort({ 'created_at': -1 }).select('-__v').limit(20));
 }
 
 /**
@@ -127,7 +127,7 @@ exports.getBestTorrents = async (req, res) => {
  */
 exports.search = async (req, res) => {
     let search = new RegExp(req.query.search, 'i');
-    let torrents = await Torrent.find({ $and: [{ $or: [{ name: search }] }] });
+    let torrents = await Torrent.find({ $and: [{ $or: [{ name: search }] }] }).lean();
     res.send(torrents);
 }
 
@@ -138,7 +138,7 @@ exports.search = async (req, res) => {
  * @returns 
  */
 exports.warning = async (req, res) => {
-    let warning = await TorrentWarning.findOne({torrent_id: {$eq: req.body.torrent_id}, user_id: req.user.id});
+    let warning = await TorrentWarning.findOne({torrent_id: {$eq: req.body.torrent_id}, user_id: req.user.id}).lean();
     if(!warning){
         warning = new TorrentWarning({torrent_id: {$eq: req.body.torrent_id}, content: {$eq: req.body.content}, user_id: req.user.id, date: new Date()});
         await warning.save();
