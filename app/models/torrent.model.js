@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+const mongoose_autopopulate = require('mongoose-autopopulate');
 const autoIncrement = require('mongoose-sequence')(mongoose);
+const User = require('./user.model');
 
 const Torrent = mongoose.Schema({
     name: {
@@ -10,8 +12,10 @@ const Torrent = mongoose.Schema({
         type: String,
         required: true
     },
-    user_id: {
-        type: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: User,
+        autopopulate: true,
         required: true
     },
     description: {
@@ -68,4 +72,5 @@ const Torrent = mongoose.Schema({
 });
 
 Torrent.plugin(autoIncrement, {id: 'torrent', inc_field: 'id'});
+Torrent.plugin(mongoose_autopopulate);
 module.exports = mongoose.model('torrent', Torrent);

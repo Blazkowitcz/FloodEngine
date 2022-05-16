@@ -12,7 +12,8 @@ const User = mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        select: false
     },
     passkey: {
         type: String,
