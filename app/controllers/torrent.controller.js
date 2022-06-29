@@ -61,7 +61,7 @@ exports.download = async (req, res) => {
  * @param {Result} res 
  */
 exports.detail = async (req, res) => {
-    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}}).lean();
+    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}});
     res.send(torrent);
 }
 
