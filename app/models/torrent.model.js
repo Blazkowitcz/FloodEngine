@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const mongoose_autopopulate = require('mongoose-autopopulate');
 const autoIncrement = require('mongoose-sequence')(mongoose);
 const User = require('./user.model');
+const Subcategory = require('./subcategory.model');
 
 const Torrent = mongoose.Schema({
     name: {
@@ -33,12 +34,10 @@ const Torrent = mongoose.Schema({
         type: Number,
         required: true
     },
-    category_id: {
-        type: String,
-        required: true
-    },
-    subcategory_id: {
-        type: String,
+    subcategory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Subcategory,
+        autopopulate: true,
         required: true
     },
     seeders: {

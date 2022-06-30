@@ -11,18 +11,18 @@ const History = require('../models/history.model');
  * @return {Buffer}
  */
 exports.announce = async (req, res) => {
-    let user = await User.findOne({passkey: {$eq: req.params.passkey}}).lean();
+    let user = await User.findOne({passkey: {$eq: req.params.passkey}});
     let peers = [];
     if(user !== null){
-        let peer = await Peer.findOne({hash: {$eq: req.query.info_hash}, user_id : user._id, ip: req.headers.host.substring(0, req.headers.host.indexOf(':')), port: {$eq: req.query.port}}).lean();
+        let peer = await Peer.findOne({hash: {$eq: req.query.info_hash}, user_id : user._id, ip: req.headers.host.substring(0, req.headers.host.indexOf(':')), port: {$eq: req.query.port}});
         if(peer === null){
-            peer = await new Peer({hash: {$eq: req.query.info_hash}, user_id: user._id});
+            peer = await new Peer({hash: req.query.info_hash, user_id: user._id});
         }
         peer.date = new Date();
         peer.port = req.query.port;
         peer.ip = req.headers.host.substring(0, req.headers.host.indexOf(':'));
         peer.save();
-        peers = await Peer.find({hash: {$eq: req.query.info_hash}}).select('ip port -_id').lean();
+        peers = await Peer.find({hash: {$eq: req.query.info_hash}}).select('ip port -_id');
         if(req.query.left == 0){
             setHistory(req.query.info_hash, user);
         }
