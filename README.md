@@ -86,6 +86,7 @@ NODE_ENV=production node app
 | fs | 0.0.1-security |
 | jsonwebtoken | 8.5.1 |
 | mongoose | 6.1.6 |
+| mongoose-autopopulate | 0.16.1 |
 | mongoose-sequence | 5.3.1 |
 | node-cron | 3.0.0 |
 | parse-torrent | 9.1.4 |

@@ -4,8 +4,8 @@
  * @returns {String}
  */
 function stringToSlug(string) {
-    let from = "ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;"
-    let to = "aaaaaeeeeeiiiiooooouuuunc------"
+    let from = "ãàáäâẽèèééëêìíïîõòóöôùúüûñç·/_,:;"
+    let to = "aaaaaeeeeeeeiiiiooooouuuunc------"
 
     let newText = string.split('').map(
         (letter, i) => letter.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i)))

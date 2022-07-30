@@ -14,7 +14,8 @@ const Peer = require('../models/peer.model');
  */
 exports.upload = async (req, res) => {
     let data = parse_torrent(req.files.torrent.data);
-    let torrent = await Torrent.findOne({ hahs: data.infoHash }).lean();
+    let torrent = await Torrent.findOne({ hash: data.infoHash }).lean();
+    console.log(torrent);
     if (torrent === null) {
         let file = req.files.torrent;
         let filename = crypto.randomBytes(16).toString("hex") + '.torrent';
@@ -23,9 +24,8 @@ exports.upload = async (req, res) => {
             description: req.body.description,
             filename: filename,
             hash: data.infoHash,
-            category_id: req.body.category_id,
-            subcategory_id: req.body.subcategory_id,
-            user_id: req.user.id,
+            subcategory: {_id: req.body.subcategory},
+            user: {_id: req.user.id},
             size: data.length,
             created_at: new Date()
         });
@@ -42,7 +42,7 @@ exports.upload = async (req, res) => {
  * @returns {Buffer}
  */
 exports.download = async (req, res) => {
-    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id}}).lean();
+    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id}});
     let data = parse_torrent(fs.readFileSync('./public/torrents/' + torrent.filename));
     data.announce[0] = 'http://' + config.address + ':' + config.port + "/announce/" + req.user.passkey;
     let new_torrent = parse_torrent.toTorrentFile(data);
@@ -60,7 +60,7 @@ exports.download = async (req, res) => {
  * @param {Result} res 
  */
 exports.detail = async (req, res) => {
-    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}}).lean();
+    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}});
     res.send(torrent);
 }
 
@@ -106,7 +106,7 @@ exports.delete = async (req, res) => {
  * @param {Result} res 
  */
 exports.getNewTorrents = async (req, res) => {
-    res.send(await Torrent.find().lean().sort({ 'created_at': -1 }).select('-__v').limit(20));
+    res.send(await Torrent.find().sort({ 'created_at': -1 }).select('-__v').limit(20));
 }
 
 /**

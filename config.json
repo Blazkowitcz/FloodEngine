@@ -1,4 +1,5 @@
 {
+    "address": "127.0.0.1",
     "port": 3000,
     "interval": "2700",
     "min_interval": "1800",

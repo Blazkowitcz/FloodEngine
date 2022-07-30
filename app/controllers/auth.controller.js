@@ -13,7 +13,7 @@ const config = require ('../../config.json');
 exports.signin = async (req, res) => {
     let { username, password } = req.body;
     try{
-        let user = await User.findOne({username: {$eq: username}}).lean();
+        let user = await User.findOne({username: {$eq: username}}).select('+password +passkey');
         if(!user){
             return res.status(400).json({message: "Error during login"});
         }
@@ -36,6 +36,7 @@ exports.signin = async (req, res) => {
             }
         );
     } catch (e) {
+        console.log(e);
         res.status(500).json({message: "Server Error"});
     }
 }
