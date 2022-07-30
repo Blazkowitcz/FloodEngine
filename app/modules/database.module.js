@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('../../config.json');
 
-const mongo_uri = "mongodb://" + config.database.host + ":" + config.database.port + "/" + config.database.database_name;
+const mongo_uri = "mongodb://" + config.database.user + ':' + config.database.password + '@' + config.database.host + ":" + config.database.port + "/" + config.database.database_name;
 
 const InitiateMongoServer = async () => {
     try{

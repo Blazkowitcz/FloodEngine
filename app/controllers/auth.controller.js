@@ -52,10 +52,10 @@ exports.signup = async (req, res) => {
         if(user !== null){
             res.send("User already exist");
         } else {
-            if(!minimumRequirement(password)){
-                res.send("Password does not fullfill the minimum requirements");
-                return;
-            }
+            // if(!minimumRequirement(password)){
+            //     res.send("Password does not fullfill the minimum requirements");
+            //     return;
+            // }
             let passkey = crypto.randomBytes(16).toString('hex');
             let salt = await bcrypt.genSalt(10);
             user = new User({username: username, email: email, password: await bcrypt.hash(password, salt), passkey : passkey});
