@@ -43,6 +43,9 @@ exports.upload = async (req, res) => {
  */
 exports.download = async (req, res) => {
     let torrent = await Torrent.findOne({ _id: {$eq: req.params.id}});
+    if(torrent === null){
+        res.send(false);
+    }
     let data = parse_torrent(fs.readFileSync('./public/torrents/' + torrent.filename));
     data.announce[0] = 'http://' + config.address + ':' + config.port + "/announce/" + req.user.passkey;
     let new_torrent = parse_torrent.toTorrentFile(data);
