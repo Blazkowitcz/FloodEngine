@@ -16,7 +16,6 @@ const { Stream, Readable } = require("stream");
 exports.upload = async (req, res) => {
     let data = parse_torrent(req.files.torrent.data);
     let torrent = await Torrent.findOne({ hash: data.infoHash }).lean();
-    console.log(torrent);
     if (torrent === null) {
         let file = req.files.torrent;
         let filename = crypto.randomBytes(16).toString("hex") + '.torrent';
@@ -48,22 +47,16 @@ exports.download = async (req, res) => {
         res.send(false);
     }
     let data = parse_torrent(fs.readFileSync('./public/torrents/' + torrent.filename));
+    data.createdBy = config.name;
     data.announce[0] = 'http://' + config.address + ':' + config.port + "/announce/" + req.user.passkey;
     let new_torrent = parse_torrent.toTorrentFile(data);
-    let file = data.name + '.torrent';
-    // res.writeHead(200, {
-    //     'Content-Disposition': `attachment; filename="${torrent_utils.formatName(file)}"`,
-    //     'Content-Type': 'text/plain',
-    // });
     res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
     res.set({
-        'Content-Disposition': `attachment; filename="${torrent_utils.formatName(file)}"`,
+        'Content-Disposition': `attachment; filename="${torrent_utils.formatName(data.name + '.torrent')}"`,
         'Content-Type': 'text/plain'
     });
     let stream = Readable.from(new_torrent);
     stream.pipe(res);
-    //res.download(new_torrent);
-    //return res.end(new_torrent);
 }
 
 /**
