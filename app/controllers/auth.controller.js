@@ -13,7 +13,7 @@ const config = require ('../../config.json');
 exports.signin = async (req, res) => {
     let { username, password } = req.body;
     try{
-        let user = await User.findOne({username: {$eq: username}});
+        let user = await User.findOne({username: {$eq: username}}).select('+password +passkey');
         if(!user){
             return res.status(400).json({message: "Error during login"});
         }
@@ -36,6 +36,7 @@ exports.signin = async (req, res) => {
             }
         );
     } catch (e) {
+        console.log(e);
         res.status(500).json({message: "Server Error"});
     }
 }
@@ -48,14 +49,14 @@ exports.signin = async (req, res) => {
 exports.signup = async (req, res) => {
     let { username, email, password } = req.body;
     try{
-        let user = await User.findOne({username: {$eq: username}});
+        let user = await User.findOne({username: {$eq: username}}).lean();
         if(user !== null){
             res.send("User already exist");
         } else {
-            if(!minimumRequirement(password)){
-                res.send("Password does not fullfill the minimum requirements");
-                return;
-            }
+            // if(!minimumRequirement(password)){
+            //     res.send("Password does not fullfill the minimum requirements");
+            //     return;
+            // }
             let passkey = crypto.randomBytes(16).toString('hex');
             let salt = await bcrypt.genSalt(10);
             user = new User({username: username, email: email, password: await bcrypt.hash(password, salt), passkey : passkey});

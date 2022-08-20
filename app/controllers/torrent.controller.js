@@ -6,6 +6,7 @@ const torrent_utils = require('../utils/torrent.util');
 const Torrent = require('../models/torrent.model');
 const TorrentWarning = require('../models/torrent_warning.model');
 const Peer = require('../models/peer.model');
+const { Stream, Readable } = require("stream");
 
 /**
  * Upload a Torrent
@@ -14,18 +15,17 @@ const Peer = require('../models/peer.model');
  */
 exports.upload = async (req, res) => {
     let data = parse_torrent(req.files.torrent.data);
-    let torrent = await Torrent.findOne({ hahs: data.infoHash });
+    let torrent = await Torrent.findOne({ hash: data.infoHash }).lean();
     if (torrent === null) {
         let file = req.files.torrent;
         let filename = crypto.randomBytes(16).toString("hex") + '.torrent';
         torrent = new Torrent({
             name: data.name,
-            description: {$eq: req.body.description},
+            description: req.body.description,
             filename: filename,
             hash: data.infoHash,
-            category_id: {$eq: req.body.category_id},
-            subcategory_id: {$eq: req.body.subcategory_id},
-            user_id: req.user.id,
+            subcategory: {_id: req.body.subcategory},
+            user: {_id: req.user.id},
             size: data.length,
             created_at: new Date()
         });
@@ -43,15 +43,20 @@ exports.upload = async (req, res) => {
  */
 exports.download = async (req, res) => {
     let torrent = await Torrent.findOne({ _id: {$eq: req.params.id}});
+    if(torrent === null){
+        res.send(false);
+    }
     let data = parse_torrent(fs.readFileSync('./public/torrents/' + torrent.filename));
+    data.createdBy = config.name;
     data.announce[0] = 'http://' + config.address + ':' + config.port + "/announce/" + req.user.passkey;
     let new_torrent = parse_torrent.toTorrentFile(data);
-    let file = data.name + '.torrent';
-    res.writeHead(200, {
-        'Content-Disposition': `attachment; filename="${torrent_utils.formatName(file)}"`,
-        'Content-Type': 'text/plain',
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+    res.set({
+        'Content-Disposition': `attachment; filename="${torrent_utils.formatName(data.name + '.torrent')}"`,
+        'Content-Type': 'text/plain'
     });
-    return res.end(new_torrent);
+    let stream = Readable.from(new_torrent);
+    stream.pipe(res);
 }
 
 /**
@@ -70,7 +75,7 @@ exports.detail = async (req, res) => {
  * @param {Result} res 
  */
 exports.update = async (req, res) => {
-    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id} });
+    let torrent = await Torrent.findOne({ _id: {$eq: req.params.id} }).lean();
     if(torrent !== null && torrent.user_id === req.user.id){
         torrent.name = req.body.name
         torrent.description = req.body.description;
@@ -87,7 +92,7 @@ exports.update = async (req, res) => {
  * @returns 
  */
 exports.delete = async (req, res) => {
-    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}});
+    let torrent = await Torrent.findOne({_id: {$eq: req.params.id}}).lean();
     if(torrent !== null && torrent.user_id === req.user.id){
         let diff = Math.ceil(Math.abs(new Date() - new Date(torrent.created_at)) / 36e5);
         if(diff < 1){
@@ -127,7 +132,7 @@ exports.getBestTorrents = async (req, res) => {
  */
 exports.search = async (req, res) => {
     let search = new RegExp(req.query.search, 'i');
-    let torrents = await Torrent.find({ $and: [{ $or: [{ name: search }] }] });
+    let torrents = await Torrent.find({ $and: [{ $or: [{ name: search }] }] }).lean();
     res.send(torrents);
 }
 
@@ -138,7 +143,7 @@ exports.search = async (req, res) => {
  * @returns 
  */
 exports.warning = async (req, res) => {
-    let warning = await TorrentWarning.findOne({torrent_id: {$eq: req.body.torrent_id}, user_id: req.user.id});
+    let warning = await TorrentWarning.findOne({torrent_id: {$eq: req.body.torrent_id}, user_id: req.user.id}).lean();
     if(!warning){
         warning = new TorrentWarning({torrent_id: {$eq: req.body.torrent_id}, content: {$eq: req.body.content}, user_id: req.user.id, date: new Date()});
         await warning.save();

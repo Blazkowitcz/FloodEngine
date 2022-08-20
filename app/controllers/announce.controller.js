@@ -16,7 +16,7 @@ exports.announce = async (req, res) => {
     if(user !== null){
         let peer = await Peer.findOne({hash: {$eq: req.query.info_hash}, user_id : user._id, ip: req.headers.host.substring(0, req.headers.host.indexOf(':')), port: {$eq: req.query.port}});
         if(peer === null){
-            peer = await new Peer({hash: {$eq: req.query.info_hash}, user_id: user._id});
+            peer = await new Peer({hash: req.query.info_hash, user_id: user._id});
         }
         peer.date = new Date();
         peer.port = req.query.port;
@@ -58,7 +58,7 @@ function reformatPeers(peers){
  * @param {User} user 
  */
 async function setHistory(hash, user){
-    let history = await History.findOne({user_id: {$eq: user.id}, hash: {$eq: hash}});
+    let history = await History.findOne({user_id: {$eq: user.id}, hash: {$eq: hash}}).lean();
     if(history === null){
         history = new History({user_id: {$eq: user._id}, hash: {$eq: hash}, date: new Date()});
         history.save();

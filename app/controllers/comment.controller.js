@@ -7,7 +7,7 @@ const Comment = require('../models/comment.model');
  * @returns {Array}
  */
 exports.comments = async (req, res) => {
-    let comments = await Comment.find({torrent_id: req.params.id});
+    let comments = await Comment.find({torrent_id: req.params.id}).lean();
     res.send(comments);
 }
 
@@ -28,7 +28,7 @@ exports.publish = async (req, res) => {
  * @param {Result} res 
  */
 exports.edit = async (req, res) => {
-    let comment = Comment.find({_id: req.params.comment_id, user_id: req.user.id});
+    let comment = Comment.find({_id: req.params.comment_id, user_id: req.user.id}).lean();
     if(comment !== null){
         comment.message = req.body.message;
         await comment.save();
